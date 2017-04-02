@@ -1,1 +1,0 @@
-Przygotowywaliśmy makefile z przezentowanych przez prowadzącego materiałów.
