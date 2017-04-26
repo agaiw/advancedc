@@ -29,8 +29,13 @@ int main() {
     printf("Failed to establish a connection with server.\n");
     return 1;
   }
-
-  write(sock_fd, "Hello, client A is speaking", strlen("Hello, client A is speaking"));
+  char message[40];
+  char pid[6];
+  snprintf(pid, 6, "%d", getpid());
+  strcpy(message, "Hello, client is speaking, my PID: ");
+  strcat(message, pid);
+  strcat(message, ".\n");
+  write(sock_fd, message, strlen(message));
   
   read(sock_fd, buffer, 256);
   printf("client.c: message from server: %s\n", buffer);
