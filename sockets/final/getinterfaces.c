@@ -5,48 +5,43 @@
 #include "getinterfaces.h"
 #include <string.h>
 
-ifDataS* getIfData() {
+void loadIfData(ifDataS interfaces[]) {
 
+  // Initialize interfaces table
+  for (int i = 0; i < IF_LIMIT; ++i) {
+    strcpy(interfaces[i].ifName, "");
+    strcpy(interfaces[i].ipv4Addr, "");
+    strcpy(interfaces[i].ipv4Mask, "");
+    strcpy(interfaces[i].ipv6Addr, "");
+    strcpy(interfaces[i].status, "");
+  }
+  // Get interfaces data
   struct ifaddrs* ifaddrs_p = NULL;
   getifaddrs(&ifaddrs_p);
-  ifDataS* ifData_p = NULL;
 
-  struct ifaddrs* currA = ifaddrs_p;
-  ifDataS* currD = NULL;
+  struct ifaddrs* ifaddr = ifaddrs_p;
 
-  while (currA != NULL) {
-    if(currD == NULL) {
-      ifData_p =(ifDataS*)malloc(sizeof(ifDataS*));
-      currD = ifData_p;
-      strcpy(currD->ifName, currA->ifa_name);
-      currD->next = NULL;
-    } else {
-      //check if interface already in list
-      ifDataS* p = ifData_p;
-      int alreadyAdded = 0;
-      while (p != NULL) {
-        if (p->ifName == currA->ifa_name) {
-          alreadyAdded = 1;
-          break;
-        }
-      }
-      if(!alreadyAdded) {
-        currD->next = (ifDataS*)malloc(sizeof(ifDataS*));
-        currD = currD->next;
-        strcpy(currD->ifName, currA->ifa_name);
-        currD->next = NULL;
+  while (ifaddr != NULL) {
+    for (int i = 0; i < IF_LIMIT; ++i) { 
+    if(strcmp(interfaces[i].ifName, ifaddr->ifa_name)) {
+      printf("if\n");
+      //interface already on the list
+      break;
+    } else if (strcmp(interfaces[i].ifName, "")) {
+      printf("else\n");
+      strcpy(interfaces[i].ifName, ifaddr->ifa_name);
+      break;
       }
     }
-    currA = currA->ifa_next;
-  };
-  return ifData_p;
-};
+    ifaddr = ifaddr->ifa_next;
+  }
+}
 
 int main() {
-  ifDataS* ifData_p = getIfData();
-  while (ifData_p != NULL) {
-    printf("interface: %s\n", ifData_p->ifName);
-    ifData_p = ifData_p->next;
+  ifDataS interfaces[IF_LIMIT];
+  loadIfData(interfaces);
+  for (int i = 0; i < IF_LIMIT; ++i) {
+    printf("interface: %s\n", interfaces[i].ifName);
   }
 
   return 0;

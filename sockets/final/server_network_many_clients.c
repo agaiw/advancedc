@@ -6,9 +6,11 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <netinet/in.h>
+#include "getinterfaces.h"
 
 int main() {
 
+  ifS interfaces[IF_LIMIT];
   char buffer[256];
   memset(buffer, 0, sizeof(buffer));
 

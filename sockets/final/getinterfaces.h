@@ -1,8 +1,8 @@
 #ifndef _GETINTERFACES_H_
 #define _GETINTERFACES_H_
+#define IF_LIMIT 32
 
 typedef struct ifDataS {
-  struct ifDataS* next;
   char ifName[16];
   char ipv4Addr[16];
   char ipv4Mask[16];
@@ -10,6 +10,6 @@ typedef struct ifDataS {
   char status[5];
 } ifDataS;
 
-ifDataS* getIfData();
+void loadIfData(ifDataS interfaces[]);
 
 #endif
