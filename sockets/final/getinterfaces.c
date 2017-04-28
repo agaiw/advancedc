@@ -81,7 +81,11 @@ int main() {
     printf("****************************************\n");
   for (int i = 0; i < IF_LIMIT; ++i) { 
     if(strcmp((char*)interfaces[i].ifName, "") != 0) {
-    printf("*** INTERFACE: %s ***\nStatus: %s\nHW address: %s\nIPv4 address: %s\nIPv4 mask: %s\nIPv6 address: %s\n",
+    printf("*** INTERFACE: %s ***\n \
+           Status: %s\nHW address: %s\n \
+           IPv4 address: %s\n \
+           IPv4 mask: %s\n \
+           IPv6 address: %s\n",
            interfaces[i].ifName,
            interfaces[i].status,
            interfaces[i].hwAddr,
