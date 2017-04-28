@@ -1,6 +1,6 @@
 #ifndef _GETINTERFACES_H_
 #define _GETINTERFACES_H_
-#define IF_LIMIT 32
+#define IF_LIMIT 4
 
 typedef struct ifDataS {
   char ifName[16];
