@@ -5,6 +5,7 @@
 #include <ifaddrs.h>
 #include "getinterfaces.h"
 #include <string.h>
+#include <net/if.h>
 
 void loadIfData(ifDataS interfaces[]) {
 
@@ -25,7 +26,6 @@ void loadIfData(ifDataS interfaces[]) {
 
   while (ifaddr != NULL) {
     family = ifaddr->ifa_addr->sa_family;
-    printf("family: %d\n", family);
     for (int i = 0; i < IF_LIMIT; ++i) { 
     if(strcmp((char*)interfaces[i].ifName, ifaddr->ifa_name) == 0) {
       //interface already on the list
@@ -35,16 +35,42 @@ void loadIfData(ifDataS interfaces[]) {
       break;
       }
     }
-    ifaddr = ifaddr->ifa_next;
     for (int i = 0; i < IF_LIMIT; ++i) {
-      printf("i: %d\n", i);
       if(strcmp((char*)interfaces[i].ifName, ifaddr->ifa_name) == 0) {
+        if (ifaddr->ifa_addr->sa_family == AF_PACKET) {
+        if (ifaddr->ifa_flags & (IFF_UP)) {
+          strcpy(interfaces[i].status, "UP");
+        }
+        else {
+          strcpy(interfaces[i].status, "DOWN");
+        }
+        }
         if(ifaddr->ifa_addr->sa_family == AF_INET) {
           struct sockaddr_in* sockaddr;
           sockaddr = (struct sockaddr_in*)ifaddr->ifa_addr;
           strcpy(interfaces[i].ipv4Addr, inet_ntoa(sockaddr->sin_addr));
+          sockaddr = (struct sockaddr_in*)ifaddr->ifa_netmask;
+          strcpy(interfaces[i].ipv4Mask, inet_ntoa(sockaddr->sin_addr));
+        }
+        if(ifaddr->ifa_addr->sa_family == AF_INET6) {
+          struct sockaddr_in6* sockaddr = (struct sockaddr_in6*)ifaddr->ifa_addr;
+          inet_ntop(AF_INET6, &sockaddr->sin6_addr, interfaces[i].ipv6Addr, sizeof(interfaces[i].ipv6Addr));
         }
       }
+    }
+    ifaddr = ifaddr->ifa_next;
+  }
+  for (int i = 0; i < IF_LIMIT; ++i) {
+    if(strcmp(interfaces[i].ifName, "") != 0) {
+      char path[40];
+      memset(path, 0, sizeof(path));
+      strcat(path, "/sys/class/net/");
+      strcat(path, interfaces[i].ifName);
+      strcat(path, "/address");
+      FILE* fd;
+      fd = fopen(path, "r");
+      fgets(interfaces[i].hwAddr, sizeof(interfaces[i].hwAddr), fd);
+      fclose(fd);
     }
   }
 }
@@ -52,12 +78,19 @@ void loadIfData(ifDataS interfaces[]) {
 int main() {
   ifDataS interfaces[IF_LIMIT];
   loadIfData(interfaces);
-  for (int i = 0; i < IF_LIMIT; ++i) {
-    printf("interface: %s, ipv4 address: %s\n",
+    printf("****************************************\n");
+  for (int i = 0; i < IF_LIMIT; ++i) { 
+    if(strcmp((char*)interfaces[i].ifName, "") != 0) {
+    printf("*** INTERFACE: %s ***\nStatus: %s\nHW address: %s\nIPv4 address: %s\nIPv4 mask: %s\nIPv6 address: %s\n",
            interfaces[i].ifName,
-           interfaces[i].ipv4Addr);
+           interfaces[i].status,
+           interfaces[i].hwAddr,
+           interfaces[i].ipv4Addr,
+           interfaces[i].ipv4Mask,
+           interfaces[i].ipv6Addr);
+    printf("****************************************\n");
+    }
   }
-
   return 0;
 }
 

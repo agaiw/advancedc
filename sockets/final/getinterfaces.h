@@ -8,6 +8,7 @@ typedef struct ifDataS {
   char ipv4Mask[16];
   char ipv6Addr[40];
   char status[5];
+  char hwAddr[18];
 } ifDataS;
 
 void loadIfData(ifDataS interfaces[]);
