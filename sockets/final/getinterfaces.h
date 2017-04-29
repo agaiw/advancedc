@@ -15,4 +15,10 @@ void loadIfData(ifDataS interfaces[]);
 
 void printInterfaces(ifDataS interfaces[]);
 
+void jsonizeInterface(ifDataS interfaces[], char* jsonInterface, char* ifName);
+
+void jsonizeInterfaceList(ifDataS interface[], char* jsonInterface);
+
+int getIfCount(ifDataS interface[]);
+
 #endif

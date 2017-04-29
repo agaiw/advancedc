@@ -97,3 +97,53 @@ void printInterfaces(ifDataS interfaces[]) {
   }
 }
 
+void jsonizeInterface(ifDataS interfaces[], char* jsonInterface, char* ifName) {
+  for (int i = 0; i < IF_LIMIT; ++i) {
+    if (strcmp(interfaces[i].ifName, ifName) == 0) {
+      printf("interface to be jsonized: %s\n", ifName);
+      strcpy(jsonInterface, "");
+      strcat(jsonInterface, "{\"ifName\" : \"");
+      strcat(jsonInterface, interfaces[i].ifName);
+      strcat(jsonInterface, "\",\n\"status\" : \"");
+      strcat(jsonInterface, interfaces[i].status);
+      strcat(jsonInterface, "\",\n\"hwAddr\" : \"");
+      strcat(jsonInterface, interfaces[i].hwAddr);
+      strcat(jsonInterface, "\",\n\"ipv4Addr\" : \"");
+      strcat(jsonInterface, interfaces[i].ipv4Addr);
+      strcat(jsonInterface, "\",\n\"ipv4Mask\" : \"");
+      strcat(jsonInterface, interfaces[i].ipv4Mask);
+      strcat(jsonInterface, "\",\n\"ipv6Addr\" : \"");
+      strcat(jsonInterface, interfaces[i].ipv6Addr);
+      strcat(jsonInterface, "\"}\0");
+      return;
+    }
+  }
+}
+
+void jsonizeInterfaceList(ifDataS interfaces[], char* jsonIfList) {
+  int ifCount = getIfCount(interfaces);
+  strcpy(jsonIfList, "");
+  strcat(jsonIfList, "{\"interfaces\" : [" );
+  for (int i = 0; i < IF_LIMIT; ++i) {
+    if (strcmp(interfaces[i].ifName, "") != 0) {
+      strcat(jsonIfList, "\"");
+      strcat(jsonIfList, interfaces[i].ifName);
+      strcat(jsonIfList, "\"");
+    }
+    if ((ifCount - i) > 1) {
+      strcat(jsonIfList, ", ");
+    }
+  }
+  strcat(jsonIfList, "] }");
+  return;
+}
+
+int getIfCount(ifDataS interfaces[]) {
+  int ifCount = 0;
+  for (int i = 0; i < IF_LIMIT; ++i) {
+    if (strcmp(interfaces[i].ifName, "") != 0) {
+      ++ifCount;
+    }
+  }
+  return ifCount;
+}

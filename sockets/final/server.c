@@ -19,6 +19,15 @@ int main() {
   loadIfData(interfaces);
   printInterfaces(interfaces);
 
+  // print interface list
+  char* jsl = (char*)malloc(100*sizeof(char));
+  jsonizeInterfaceList(interfaces, jsl);
+  printf("%s\n", jsl);
+  // print one interface
+  char* js = (char*)malloc(210*sizeof(char));
+  jsonizeInterface(interfaces, js, "enp0s3");
+  printf("%s\n", js);
+
   // Create socket for accepting connections
   int sock = makeSocket(PORT);
   if (listen(sock, 1) < 0) {
@@ -58,14 +67,14 @@ int main() {
         } 
         else {
           // Pending data from already connected client
-//          if(read_from_client(i) < 0) {
-    //        close(i);
-  //          FD_CLR(i, &active_fds);
-//          }
-        }
+          //readFromClient(i);
+          //if (  close(i);
+          //  FD_CLR(i, &active_fds);
+          }
       } // end if FD_ISSET
     }   // end for fd loop
-  }     // end while
+  }     // end while 
+
 
   return 0;
 }
