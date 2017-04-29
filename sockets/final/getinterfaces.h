@@ -13,4 +13,6 @@ typedef struct ifDataS {
 
 void loadIfData(ifDataS interfaces[]);
 
+void printInterfaces(ifDataS interfaces[]);
+
 #endif

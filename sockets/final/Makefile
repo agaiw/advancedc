@@ -1,16 +1,22 @@
-all: client_network server_network_many_clients
+all: client server
 
-client_network: client_network.o
-	gcc -o client_network client_network.o
+client: client.o
+	gcc -o client client.o
 
-server_network_many_clients: server_network_many_clients.o
-	gcc -o server_network_many_clients server_network_many_clients.o
+server: server.o getinterfaces.o handlesockets.o
+	gcc -o server server.o getinterfaces.o handlesockets.o
 
-client_network.o: client_network.c
-	gcc -c -o client_network.o client_network.c
+client.o: client.c
+	gcc -c -o client.o client.c
 
-server_network_many_clients.o: server_network_many_clients.c
-	gcc -c -o server_network_many_clients.o server_network_many_clients.c
+server.o: server.c getinterfaces.h handlesockets.h
+	gcc -c -o server.o server.c
+
+getinterfaces.o: getinterfaces.c getinterfaces.h
+	gcc -c -o getinterfaces.o getinterfaces.c
+
+handlesockets.o: handlesockets.c handlesockets.h
+	gcc -c -o handlesockets.o handlesockets.c
 
 clean:
-	-rm -rf *.o client_network server_network_many_clients
+	-rm -rf *.o client server

@@ -75,14 +75,14 @@ void loadIfData(ifDataS interfaces[]) {
   }
 }
 
-int main() {
-  ifDataS interfaces[IF_LIMIT];
-  loadIfData(interfaces);
-    printf("****************************************\n");
-  for (int i = 0; i < IF_LIMIT; ++i) { 
+
+void printInterfaces(ifDataS interfaces[]) {
+  printf("****************************************\n");
+  for (int i = 0; i < IF_LIMIT; ++i) {
     if(strcmp((char*)interfaces[i].ifName, "") != 0) {
     printf("*** INTERFACE: %s ***\n \
-           Status: %s\nHW address: %s\n \
+           Status: %s\n \
+           HW address: %s\n \
            IPv4 address: %s\n \
            IPv4 mask: %s\n \
            IPv6 address: %s\n",
@@ -95,8 +95,5 @@ int main() {
     printf("****************************************\n");
     }
   }
-  return 0;
 }
-
-
 
