@@ -2,6 +2,10 @@
 #define _GETINTERFACES_H_
 #define IF_LIMIT 4
 
+#define IFDATA_IFNAME 16
+#define IF_SIZE 210
+#define IF_ARRAY_SIZE 20 
+
 typedef struct ifDataS {
   char ifName[16];
   char ipv4Addr[16];
@@ -15,9 +19,11 @@ void loadIfData(ifDataS interfaces[]);
 
 void printInterfaces(ifDataS interfaces[]);
 
-void jsonizeInterface(ifDataS interfaces[], char* jsonInterface, char* ifName);
+void jsonizeInterface(ifDataS interfaces[], char* out, char* ifName);
 
-void jsonizeInterfaceList(ifDataS interface[], char* jsonInterface);
+void jsonizeInterfaceList(ifDataS interface[], char* out);
+
+void jsonizeAllInterfaces(ifDataS interfaces[], char* out);
 
 int getIfCount(ifDataS interface[]);
 

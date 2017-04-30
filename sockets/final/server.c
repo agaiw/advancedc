@@ -10,23 +10,8 @@
 #include "getinterfaces.h"
 #include "handlesockets.h"
 #define PORT      5000
-#define MSG_LIMIT 512
-
 
 int main() {
-
-  ifDataS interfaces[IF_LIMIT];
-  loadIfData(interfaces);
-  printInterfaces(interfaces);
-
-  // print interface list
-  char* jsl = (char*)malloc(100*sizeof(char));
-  jsonizeInterfaceList(interfaces, jsl);
-  printf("%s\n", jsl);
-  // print one interface
-  char* js = (char*)malloc(210*sizeof(char));
-  jsonizeInterface(interfaces, js, "enp0s3");
-  printf("%s\n", js);
 
   // Create socket for accepting connections
   int sock = makeSocket(PORT);
@@ -48,7 +33,6 @@ int main() {
       perror("select error");
       exit(EXIT_FAILURE);
     }
-
     // Handle socket which have some pending information
     for (int i = 0; i < FD_SETSIZE; ++i) {
       if (FD_ISSET(i, &read_fds)) {
@@ -62,14 +46,15 @@ int main() {
           if (new < 0) {
             perror("accept error");
             exit(EXIT_FAILURE);
-            FD_SET(new, &active_fds);
           }
+            FD_SET(new, &active_fds);
         } 
         else {
           // Pending data from already connected client
-          //readFromClient(i);
-          //if (  close(i);
-          //  FD_CLR(i, &active_fds);
+          printf("we have some pending data\n");
+          char request[MAX_REQ];
+          readFromClient(request, i);
+          handleRequest(request, i, &active_fds);
           }
       } // end if FD_ISSET
     }   // end for fd loop
