@@ -97,61 +97,40 @@ void printInterfaces(ifDataS interfaces[]) {
   }
 }
 
-void jsonizeInterface(ifDataS interfaces[], char* out, char* ifName) {
-  for (int i = 0; i < IF_LIMIT; ++i) {
+void dumpInterface(ifDataS interfaces[], char* out, char* ifName) {
+  int ifCount = getIfCount(interfaces);
+  for (int i = 0; i < ifCount; ++i) {
     if (strcmp(interfaces[i].ifName, ifName) == 0) {
-      printf("interface to be jsonized: %s\n", ifName);
-      strcpy(out, "");
-      strcat(out, "{\"ifName\" : \"");
+      strcat(out, "INTERFACE: ");
       strcat(out, interfaces[i].ifName);
-      strcat(out, "\",\n\"status\" : \"");
+      strcat(out, "\nStatus: ");
       strcat(out, interfaces[i].status);
-      strcat(out, "\",\n\"hwAddr\" : \"");
+      strcat(out, "\nMAC address: ");
       strcat(out, interfaces[i].hwAddr);
-      strcat(out, "\",\n\"ipv4Addr\" : \"");
+      strcat(out, "\nIPv4 address: ");
       strcat(out, interfaces[i].ipv4Addr);
-      strcat(out, "\",\n\"ipv4Mask\" : \"");
+      strcat(out, "\nIPv4 mask: ");
       strcat(out, interfaces[i].ipv4Mask);
-      strcat(out, "\",\n\"ipv6Addr\" : \"");
+      strcat(out, "\nIPv6 address: ");
       strcat(out, interfaces[i].ipv6Addr);
-      strcat(out, "\"}\0");
       return;
     }
   }
 }
 
-void jsonizeInterfaceList(ifDataS interfaces[], char* out) {
+void dumpInterfaceList(ifDataS interfaces[], char* out) {
   int ifCount = getIfCount(interfaces);
   strcpy(out, "");
-  strcat(out, "{\"interfaces\" : [" );
+  strcat(out, "Available interfaces: " );
   for (int i = 0; i < IF_LIMIT; ++i) {
     if (strcmp(interfaces[i].ifName, "") != 0) {
-      strcat(out, "\"");
       strcat(out, interfaces[i].ifName);
-      strcat(out, "\"");
     }
     if ((ifCount - i) > 1) {
       strcat(out, ", ");
     }
   }
-  strcat(out, "] }\0");
-  return;
-}
-
-void jsonizeAllInterfaces(ifDataS interfaces[], char* out) {
-  int ifCount = getIfCount(interfaces);
-  strcpy(out, "");
-  strcat(out, "{\"interfacesData\" : [" );
-  for (int i = 0; i < ifCount; ++i) {
-    char* js = (char*)malloc(IF_SIZE*sizeof(char)); 
-    jsonizeInterface(interfaces, js, interfaces[i].ifName);
-    strcat(out, js);
-    if ((ifCount - i) > 1) {
-      strcat(out, ", ");
-    }
-    free(js);
-  }
-  strcat(out, "] }\0");
+  strcat(out, "\0");
   return;
 }
 

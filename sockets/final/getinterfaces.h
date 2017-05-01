@@ -19,11 +19,9 @@ void loadIfData(ifDataS interfaces[]);
 
 void printInterfaces(ifDataS interfaces[]);
 
-void jsonizeInterface(ifDataS interfaces[], char* out, char* ifName);
+void dumpInterface(ifDataS interfaces[], char* out, char* ifName);
 
-void jsonizeInterfaceList(ifDataS interface[], char* out);
-
-void jsonizeAllInterfaces(ifDataS interfaces[], char* out);
+void dumpInterfaceList(ifDataS interface[], char* out);
 
 int getIfCount(ifDataS interface[]);
 

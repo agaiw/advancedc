@@ -29,6 +29,7 @@ int main() {
   // and communicating with clients
   while (1) {
     read_fds = active_fds;
+    
     if (select(FD_SETSIZE, &read_fds, NULL, NULL, NULL) < 0) {
       perror("select error");
       exit(EXIT_FAILURE);
@@ -51,7 +52,6 @@ int main() {
         } 
         else {
           // Pending data from already connected client
-          printf("we have some pending data\n");
           char* request = (char*)malloc(512 * sizeof(char));
           strcpy(request, "");
           readFromClient(request, i);
