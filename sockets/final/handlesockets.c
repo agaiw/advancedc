@@ -55,7 +55,7 @@ void handleRequest(char* request, int descriptor, fd_set* active_fds) {
   char* reply = (char*)malloc(512 * sizeof(char));
   if (strcmp(request, "getlist") == 0) {
     jsonizeInterfaceList(interfaces, reply);
-}
+  }
   else if (strcmp(request, "getall") == 0) {
     jsonizeAllInterfaces(interfaces, reply);
   }
@@ -68,18 +68,19 @@ void handleRequest(char* request, int descriptor, fd_set* active_fds) {
     strncpy(dest, request, 10);
     dest[10] = 0;
     printf("dest: %s\n", dest); 
-   if (strcmp(dest, "interface:") == 0) {
+    if (strcmp(dest, "interface:") == 0) {
       int valid = 0;
       char* interface = (request + 10);
-      int ifNotFound = 1;
+      int notFound = 1;
       for (int i = 0; i < ifCount; ++i) {
         if (strcmp(interface, interfaces[i].ifName) == 0) {
           jsonizeInterface(interfaces, reply, interface);
-          ifNotFound = 0;
+          notFound = 0;
+          break;
         }
-        if (ifNotFound) {
-          strcpy(reply, "unknowninterface");
-        }
+      }
+      if (notFound) {
+        strcpy(reply, "unknowninterface");
       }
     }
     else {
