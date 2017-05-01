@@ -31,8 +31,10 @@ int makeSocket(int port) {
 }
 
 void readFromClient(char* request, int descriptor) {
-  char buffer[MAX_REQ];
+  char* buffer = malloc(MAX_REQ * sizeof(char));
+  strcpy(buffer, "");
   int len = read(descriptor, buffer, MAX_REQ);
+  buffer[len] = '\0';
   if (len <= 0) {
     perror("unable to read request from client");
     exit(EXIT_FAILURE);
@@ -40,46 +42,56 @@ void readFromClient(char* request, int descriptor) {
   else {
     strcpy(request, buffer);
   }
+  printf("readFromClient: request: %s, buffer: %s\n", request, buffer);
+  free(buffer);
   return;
 }
 
 void handleRequest(char* request, int descriptor, fd_set* active_fds) {
+  printf("request from client: %s\n", request);
   ifDataS interfaces[IF_LIMIT];
   loadIfData(interfaces);
   int ifCount = getIfCount(interfaces);
-  char* reply;
+  char* reply = (char*)malloc(512 * sizeof(char));
   if (strcmp(request, "getlist") == 0) {
-    reply = (char*)malloc(IF_ARRAY_SIZE + ifCount * IFDATA_IFNAME * sizeof(char));
     jsonizeInterfaceList(interfaces, reply);
 }
-  else if (strcmp(request, "getalldata") == 0) {
-    reply = (char*)malloc(IF_ARRAY_SIZE + ifCount * IF_SIZE * sizeof(char));
+  else if (strcmp(request, "getall") == 0) {
     jsonizeAllInterfaces(interfaces, reply);
   }
   else if (strcmp(request, "error") == 0) {
-    reply = "servererror";
+    strcpy(reply, "servererror");
   }
   else {
-    char dest[11];
+    char* dest = malloc(11 * sizeof(char));
+    strcpy(dest, "");
     strncpy(dest, request, 10);
     dest[10] = 0;
-    if (strcmp(dest, "interface:") == 0) {
+    printf("dest: %s\n", dest); 
+   if (strcmp(dest, "interface:") == 0) {
       int valid = 0;
       char* interface = (request + 10);
+      int ifNotFound = 1;
       for (int i = 0; i < ifCount; ++i) {
         if (strcmp(interface, interfaces[i].ifName) == 0) {
-          reply = (char*)malloc(IF_SIZE * sizeof(char));
           jsonizeInterface(interfaces, reply, interface);
+          ifNotFound = 0;
+        }
+        if (ifNotFound) {
+          strcpy(reply, "unknowninterface");
         }
       }
     }
     else {
-      reply = "unknownrequest";
+      strcpy(reply, "unknownrequest");
     }
-    write(descriptor, reply, strlen(reply));
-    close(descriptor);
-    FD_CLR(descriptor, active_fds);
+  free(dest);
   }
+  printf("reply to client: %s\n", reply);
+  write(descriptor, reply, strlen(reply));
+  free(reply);
+  close(descriptor);
+  FD_CLR(descriptor, active_fds);
 }
 
 

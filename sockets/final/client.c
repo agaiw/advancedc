@@ -7,9 +7,9 @@
 #include <fcntl.h>
 #include <netinet/in.h>
 
-int main() {
+int main(int argc, char* argv[]) {
 
-  char buffer[256];
+  char buffer[512];
   memset(buffer, 0, sizeof(buffer));
   struct sockaddr_in server;
   memset(&server, 0, sizeof(server));
@@ -29,10 +29,10 @@ int main() {
     printf("Failed to establish a connection with server.\n");
     return 1;
   }
-  char message[] = "interface:lo";
-  write(sock_fd, message, strlen(message));
-  
-  read(sock_fd, buffer, 256);
+  printf("request to server: %s\n", argv[1]);
+  write(sock_fd, argv[1], strlen(argv[1]));
+  printf("buffer before receiving: %s\n", buffer);  
+  read(sock_fd, buffer, 512);
   printf("client.c: message from server: %s\n", buffer);
   close(sock_fd);
   return 0;

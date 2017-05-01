@@ -134,7 +134,7 @@ void jsonizeInterfaceList(ifDataS interfaces[], char* out) {
       strcat(out, ", ");
     }
   }
-  strcat(out, "] }");
+  strcat(out, "] }\0");
   return;
 }
 
@@ -143,14 +143,15 @@ void jsonizeAllInterfaces(ifDataS interfaces[], char* out) {
   strcpy(out, "");
   strcat(out, "{\"interfacesData\" : [" );
   for (int i = 0; i < ifCount; ++i) {
-  char* js = (char*)malloc(IF_SIZE*sizeof(char)); 
-  jsonizeInterface(interfaces, js, interfaces[i].ifName);
-  strcat(out, js);
-  if ((ifCount - i) > 1) {
+    char* js = (char*)malloc(IF_SIZE*sizeof(char)); 
+    jsonizeInterface(interfaces, js, interfaces[i].ifName);
+    strcat(out, js);
+    if ((ifCount - i) > 1) {
       strcat(out, ", ");
     }
+    free(js);
   }
-  strcat(out, "] }");
+  strcat(out, "] }\0");
   return;
 }
 

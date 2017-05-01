@@ -52,9 +52,11 @@ int main() {
         else {
           // Pending data from already connected client
           printf("we have some pending data\n");
-          char request[MAX_REQ];
+          char* request = (char*)malloc(512 * sizeof(char));
+          strcpy(request, "");
           readFromClient(request, i);
           handleRequest(request, i, &active_fds);
+          free(request);
           }
       } // end if FD_ISSET
     }   // end for fd loop
