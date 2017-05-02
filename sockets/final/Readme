@@ -1,0 +1,15 @@
+===================================================================================
+Server usage:
+
+./server                        Run server
+
+===================================================================================
+Client usage:
+
+./client getlist		Get list of network interfaces available at server
+./client getall			Get detailed information about interfaces
+./client interface:<interface>	Get detailed information about selected interface
+                                Example: ./client interface:lo
+./client help			Display usage information
+
+===================================================================================
