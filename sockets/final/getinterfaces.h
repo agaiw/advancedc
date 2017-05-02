@@ -1,10 +1,6 @@
 #ifndef _GETINTERFACES_H_
 #define _GETINTERFACES_H_
-#define IF_LIMIT 4
-
-#define IFDATA_IFNAME 16
-#define IF_SIZE 210
-#define IF_ARRAY_SIZE 20 
+#define IF_LIMIT 10
 
 /**
 * Structure:   ifDataS

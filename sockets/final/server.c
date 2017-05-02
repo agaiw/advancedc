@@ -11,7 +11,7 @@
 #include "getinterfaces.h"
 #include "handlesockets.h"
 
-#define PORT 5000
+#define PORT 56789
 
 int main() {
 

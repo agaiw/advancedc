@@ -8,6 +8,7 @@
 #include <netinet/in.h>
 
 #define MAX_RESPONSE 4096
+#define PORT 56789
 
 void displayHelp(void);
 
@@ -31,7 +32,7 @@ int main(int argc, char* argv[]) {
   }
 
   server.sin_family = AF_INET;
-  server.sin_port = htons(5000);
+  server.sin_port = htons(56789);
   server.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
 
   if(connect(sock_fd, (struct sockaddr*)&server, sizeof(server)) < 0) {
