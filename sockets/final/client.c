@@ -32,7 +32,7 @@ int main(int argc, char* argv[]) {
   }
 
   server.sin_family = AF_INET;
-  server.sin_port = htons(56789);
+  server.sin_port = htons(PORT);
   server.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
 
   if(connect(sock_fd, (struct sockaddr*)&server, sizeof(server)) < 0) {
