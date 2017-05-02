@@ -7,16 +7,18 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <netinet/in.h>
+
 #include "getinterfaces.h"
 #include "handlesockets.h"
-#define PORT      5000
+
+#define PORT 5000
 
 int main() {
 
   // Create socket for accepting connections
   int sock = makeSocket(PORT);
   if (listen(sock, 1) < 0) {
-    perror("listening error");
+    perror("Failed to start listening on socket.");
     exit(EXIT_FAILURE);
   }
 
@@ -29,9 +31,8 @@ int main() {
   // and communicating with clients
   while (1) {
     read_fds = active_fds;
-    
     if (select(FD_SETSIZE, &read_fds, NULL, NULL, NULL) < 0) {
-      perror("select error");
+      perror("Failed to select client socket.");
       exit(EXIT_FAILURE);
     }
     // Handle socket which have some pending information
@@ -45,14 +46,14 @@ int main() {
                            (struct sockaddr*)&clientname,
                            (unsigned int*)&size);
           if (new < 0) {
-            perror("accept error");
+            perror("Failed to accept connection.");
             exit(EXIT_FAILURE);
           }
             FD_SET(new, &active_fds);
         } 
         else {
           // Pending data from already connected client
-          char* request = (char*)malloc(512 * sizeof(char));
+          char* request = (char*)malloc(MAX_REQUEST * sizeof(char));
           strcpy(request, "");
           readFromClient(request, i);
           handleRequest(request, i, &active_fds);
@@ -61,8 +62,5 @@ int main() {
       } // end if FD_ISSET
     }   // end for fd loop
   }     // end while 
-
-
   return 0;
 }
-

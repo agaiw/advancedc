@@ -20,7 +20,6 @@ void loadIfData(ifDataS interfaces[]) {
   // Get interfaces data
   struct ifaddrs* ifaddrs_p = NULL;
   getifaddrs(&ifaddrs_p);
-
   struct ifaddrs* ifaddr = ifaddrs_p;
   int family;
 
@@ -75,26 +74,20 @@ void loadIfData(ifDataS interfaces[]) {
   }
 }
 
-
-void printInterfaces(ifDataS interfaces[]) {
-  printf("****************************************\n");
+void dumpInterfaceList(ifDataS interfaces[], char* out) {
+  int ifCount = getIfCount(interfaces);
+  strcpy(out, "");
+  strcat(out, "Available interfaces: " );
   for (int i = 0; i < IF_LIMIT; ++i) {
-    if(strcmp((char*)interfaces[i].ifName, "") != 0) {
-    printf("*** INTERFACE: %s ***\n \
-           Status: %s\n \
-           HW address: %s\n \
-           IPv4 address: %s\n \
-           IPv4 mask: %s\n \
-           IPv6 address: %s\n",
-           interfaces[i].ifName,
-           interfaces[i].status,
-           interfaces[i].hwAddr,
-           interfaces[i].ipv4Addr,
-           interfaces[i].ipv4Mask,
-           interfaces[i].ipv6Addr);
-    printf("****************************************\n");
+    if (strcmp(interfaces[i].ifName, "") != 0) {
+      strcat(out, interfaces[i].ifName);
+    }
+    if ((ifCount - i) > 1) {
+      strcat(out, ", ");
     }
   }
+  strcat(out, "\0");
+  return;
 }
 
 void dumpInterface(ifDataS interfaces[], char* out, char* ifName) {
@@ -116,22 +109,6 @@ void dumpInterface(ifDataS interfaces[], char* out, char* ifName) {
       return;
     }
   }
-}
-
-void dumpInterfaceList(ifDataS interfaces[], char* out) {
-  int ifCount = getIfCount(interfaces);
-  strcpy(out, "");
-  strcat(out, "Available interfaces: " );
-  for (int i = 0; i < IF_LIMIT; ++i) {
-    if (strcmp(interfaces[i].ifName, "") != 0) {
-      strcat(out, interfaces[i].ifName);
-    }
-    if ((ifCount - i) > 1) {
-      strcat(out, ", ");
-    }
-  }
-  strcat(out, "\0");
-  return;
 }
 
 int getIfCount(ifDataS interfaces[]) {
