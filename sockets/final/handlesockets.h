@@ -24,9 +24,9 @@ int makeSocket(int port);
 * Parameters:  [in/out] request - empty buffer to put client request in
 *              [in] descriptor - file descriptor of particular client socket 
 *
-* Returns:     void
+* Returns:     Length of read message or -1 in case of error
 **/
-void readFromClient(char* request, int descriptor);
+int readFromClient(char* request, int descriptor);
 
 /**
 * Function:    handleRequest

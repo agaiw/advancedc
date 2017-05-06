@@ -19,29 +19,28 @@ int makeSocket(int port) {
   // Create server socket
   if ((sock_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
     perror("Failed to create socket.");
-    exit(EXIT_FAILURE);
   };
 
  // Bind socket to port
   if (bind(sock_fd, (struct sockaddr*)&server, sizeof(server)) < 0) {
     perror("Failed to bind socket.");
-    exit(EXIT_FAILURE);
   }
 
   return sock_fd;
 }
 
-void readFromClient(char* request, int descriptor) {
+int  readFromClient(char* request, int descriptor) {
 
   int len = read(descriptor, request, MAX_REQUEST);
-  request[len] = '\0';
 
-  if (len <= 0) {
+  if (len > 0) {
+    request[len] = '\0';
+  }
+  else {
     perror("Unable to read request from client.");
-    exit(EXIT_FAILURE);
   }
 
-  return;
+  return len;
 }
 
 void handleRequest(char* request, int descriptor, fd_set* active_fds) {

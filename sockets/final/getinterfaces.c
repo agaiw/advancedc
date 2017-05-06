@@ -59,6 +59,9 @@ void loadIfData(ifDataS interfaces[]) {
     }
     ifaddr = ifaddr->ifa_next;
   }
+
+  free(ifaddrs_p);
+
   for (int i = 0; i < IF_LIMIT; ++i) {
     if(strcmp(interfaces[i].ifName, "") != 0) {
       char path[40];

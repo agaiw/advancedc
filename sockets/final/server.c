@@ -33,7 +33,6 @@ int main() {
     read_fds = active_fds;
     if (select(FD_SETSIZE, &read_fds, NULL, NULL, NULL) < 0) {
       perror("Failed to select client socket.");
-      exit(EXIT_FAILURE);
     }
     // Handle socket which have some pending information
     for (int i = 0; i < FD_SETSIZE; ++i) {
@@ -47,16 +46,19 @@ int main() {
                            (unsigned int*)&size);
           if (new < 0) {
             perror("Failed to accept connection.");
-            exit(EXIT_FAILURE);
           }
+          else {
             FD_SET(new, &active_fds);
+          }
         } 
         else {
           // Pending data from already connected client
           char* request = (char*)malloc(MAX_REQUEST * sizeof(char));
           strcpy(request, "");
-          readFromClient(request, i);
-          handleRequest(request, i, &active_fds);
+          int status =  readFromClient(request, i);
+          if (status >= 0) {
+            handleRequest(request, i, &active_fds);
+          }
           free(request);
           }
       } // end if FD_ISSET
