@@ -53,14 +53,22 @@ int main() {
         } 
         else {
           // Pending data from already connected client
+
           char* request = (char*)malloc(MAX_REQUEST * sizeof(char));
           strcpy(request, "");
           int status =  readFromClient(request, i);
-          if (status >= 0) {
-            handleRequest(request, i, &active_fds);
+          if (status > 0) {
+            char* response = (char*)malloc(MAX_RESPONSE * sizeof(char));
+            createResponse(request, response);
+            write(i, response, strlen(response));
+            free(response);
+          }
+          else {
+            close(i);
+            FD_CLR(i, &active_fds);
           }
           free(request);
-          }
+        }
       } // end if FD_ISSET
     }   // end for fd loop
   }     // end while 

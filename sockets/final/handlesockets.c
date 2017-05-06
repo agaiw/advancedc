@@ -29,53 +29,45 @@ int makeSocket(int port) {
   return sock_fd;
 }
 
-int  readFromClient(char* request, int descriptor) {
+int readFromClient(char* request, int descriptor) {
 
   int len = read(descriptor, request, MAX_REQUEST);
 
   if (len > 0) {
     request[len] = '\0';
   }
-  else {
-    perror("Unable to read request from client.");
-  }
 
   return len;
 }
 
-void handleRequest(char* request, int descriptor, fd_set* active_fds) {
+void createResponse(char* request, char* response) {
 
   ifDataS interfaces[IF_LIMIT];
   loadIfData(interfaces);
   int ifCount = getIfCount(interfaces);
-  char* reply = (char*)malloc(MAX_RESPONSE * sizeof(char));
+  int status = 0;
 
   // Valid request
   if (strcmp(request, "getlist") == 0) {
-    dumpInterfaceList(interfaces, reply);
+    dumpInterfaceList(interfaces, response);
   }
   // Valid request
   else if (strcmp(request, "getall") == 0) {
-    strcpy(reply, "");
-    strcat(reply, "Details of available interfaces:\n");
+    strcpy(response, "");
+    strcat(response, "Details of available interfaces:\n");
     for (int i = 0; i < ifCount; ++i) {
-      dumpInterface(interfaces, reply, interfaces[i].ifName);
+      dumpInterface(interfaces, response, interfaces[i].ifName);
       if ((ifCount - i) > 1) {
-        strcat(reply, "\n");
+        strcat(response, "\n");
       }
-      strcat(reply, "\0");
+      strcat(response, "\0");
     }
-  }
-
-  // Problem with server
-  else if (strcmp(request, "error") == 0) {
-    strcpy(reply, "Server encounered error.");
   }
 
   // Parsing other kinds of requests
   else {
     char* dest = malloc(11 * sizeof(char));
-    strcpy(reply, "");
+    strcpy(response, "");
     strcpy(dest, "");
     strncpy(dest, request, 10);
     dest[10] = 0;
@@ -89,25 +81,21 @@ void handleRequest(char* request, int descriptor, fd_set* active_fds) {
 
         //...and valid interface
         if (strcmp(interface, interfaces[i].ifName) == 0) {
-          dumpInterface(interfaces, reply, interface);
+          dumpInterface(interfaces, response, interface);
           notFound = 0;
-          strcat(reply, "\0");
+          strcat(response, "\0");
           break;
         }
       }
       // ... but unknown interface
       if (notFound) {
-        strcpy(reply, "Unknown interface.");
+        strcpy(response, "Unknown interface.");
       }
     }
     // Unknown request
     else {
-      strcpy(reply, "Unknown request.");
+      strcpy(response, "Unknown request.");
     }
   free(dest);
   }
-  write(descriptor, reply, strlen(reply));
-  free(reply);
-  close(descriptor);
-  FD_CLR(descriptor, active_fds);
 }

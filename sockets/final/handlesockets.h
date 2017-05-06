@@ -39,11 +39,10 @@ int readFromClient(char* request, int descriptor);
 *              to client. Otherwise error message is prepared and sent.
 *
 * Parameters:  [in] request - request from the client
-*              [in] descriptor - file descriptor of particular client socket
-*              [in] active_fds - array of active file descriptors
+*              [in/out] response - response to the client
 *
 * Returns:     void
 **/
-void handleRequest(char* request, int descriptor, fd_set* active_fds);
+void createResponse(char* request, char* response);
 
 #endif
