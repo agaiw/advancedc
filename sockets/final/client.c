@@ -8,17 +8,20 @@
 #include <netinet/in.h>
 
 #define MAX_RESPONSE 4096
-#define PORT 56789
 
 void displayHelp(void);
 
 int main(int argc, char* argv[]) {
 
-  if ((argc < 2) || (strcmp(argv[1], "help") == 0)) {
+  if (argc < 3 ||
+      strcmp(argv[1], "help") == 0 ||
+      strtol(argv[1], NULL, 10) < 1024 ||
+      strtol(argv[1], NULL, 10) > 49151) {
     displayHelp();
     exit(EXIT_SUCCESS);
   }
 
+  int port = strtol(argv[1], NULL, 10);
   char buffer[MAX_RESPONSE];
   memset(buffer, 0, sizeof(buffer));
   struct sockaddr_in server;
@@ -32,15 +35,15 @@ int main(int argc, char* argv[]) {
   }
 
   server.sin_family = AF_INET;
-  server.sin_port = htons(PORT);
+  server.sin_port = htons(port);
   server.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
 
   if(connect(sock_fd, (struct sockaddr*)&server, sizeof(server)) < 0) {
     printf("Failed to establish a connection with server.\n");
     return 1;
   }
+  write(sock_fd, argv[2], strlen(argv[2]));
   printf("Request sent. Waiting for response from server...\n");
-  write(sock_fd, argv[1], strlen(argv[1]));
   int readBytes;
   readBytes = read(sock_fd, buffer, MAX_RESPONSE);
   printf("Response from server received:\n");
@@ -51,8 +54,9 @@ int main(int argc, char* argv[]) {
 
 void displayHelp() {
   printf("Usage options:\n");
-  printf("./client getlist\t\tGet list of network interfaces available at server\n");
-  printf("./client getall\t\t\tGet detailed information about interfaces\n");
-  printf("./client interface:<interface>\tGet detailed information about selected interface\n");
+  printf("./client <port> getlist\t\tGet list of network interfaces available at server\n");
+  printf("./client <port> getall\t\t\tGet detailed information about interfaces\n");
+  printf("./client <port> interface:<interface>\tGet detailed information about selected interface\n");
   printf("./client help\t\t\tDisplay this help\n");
+  printf("Valid port numbers are in range 1024 - 49151\n");
 }

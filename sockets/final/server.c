@@ -11,12 +11,16 @@
 #include "getinterfaces.h"
 #include "handlesockets.h"
 
-#define PORT 56789
+int main(int argc, char* argv[]) {
 
-int main() {
-
+  int port = strtol(argv[1], NULL, 10);
+  if (argc < 2 || port < 1024 || port > 49151) {
+    printf("Please provide valid port number. Example usage:\n ");
+    printf("./server 5100\n");
+    exit(EXIT_SUCCESS);
+  }
   // Create socket for accepting connections
-  int sock = makeSocket(PORT);
+  int sock = makeSocket(port);
   if (listen(sock, 1) < 0) {
     perror("Failed to start listening on socket.");
     exit(EXIT_FAILURE);
