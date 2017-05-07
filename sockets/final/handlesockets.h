@@ -1,9 +1,6 @@
 #ifndef _HANDLESOCKETS_H_
 #define _HANDLESOCKETS_H_
 
-#define MAX_REQUEST 64 
-#define MAX_RESPONSE 4096
-
 /**
 * Function:    makeSocket
 * 
@@ -22,11 +19,12 @@ int makeSocket(int port);
 * Description: Reads incoming client request and puts it
 *              into provided buffer
 * Parameters:  [in/out] request - empty buffer to put client request in
+*              [in] request_limit - request buffer size
 *              [in] descriptor - file descriptor of particular client socket 
 *
 * Returns:     Length of read message or -1 in case of error
 **/
-int readFromClient(char* request, int descriptor);
+int readFromClient(char* request, int request_limit, int descriptor);
 
 /**
 * Function:    handleRequest

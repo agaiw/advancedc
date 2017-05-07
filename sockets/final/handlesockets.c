@@ -29,9 +29,9 @@ int makeSocket(int port) {
   return sock_fd;
 }
 
-int readFromClient(char* request, int descriptor) {
+int readFromClient(char* request, int request_limit, int descriptor) {
 
-  int len = read(descriptor, request, MAX_REQUEST);
+  int len = read(descriptor, request, request_limit);
 
   if (len > 0) {
     request[len] = '\0';

@@ -11,6 +11,9 @@
 #include "getinterfaces.h"
 #include "handlesockets.h"
 
+#define MAX_REQUEST 64
+#define MAX_RESPONSE 4096
+
 int main(int argc, char* argv[]) {
 
   int port = strtol(argv[1], NULL, 10);
@@ -60,7 +63,7 @@ int main(int argc, char* argv[]) {
 
           char* request = (char*)malloc(MAX_REQUEST * sizeof(char));
           strcpy(request, "");
-          int status =  readFromClient(request, i);
+          int status =  readFromClient(request, MAX_REQUEST, i);
           if (status > 0) {
             char* response = (char*)malloc(MAX_RESPONSE * sizeof(char));
             createResponse(request, response);
