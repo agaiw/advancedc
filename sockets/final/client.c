@@ -27,7 +27,6 @@ int main(int argc, char* argv[]) {
   struct sockaddr_in server;
   memset(&server, 0, sizeof(server));
   int sock_fd = 0;
-  size_t server_len;
 
   if((sock_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
     printf("Failed to create socket.\n");
@@ -44,8 +43,7 @@ int main(int argc, char* argv[]) {
   }
   write(sock_fd, argv[2], strlen(argv[2]));
   printf("Request sent. Waiting for response from server...\n");
-  int readBytes;
-  readBytes = read(sock_fd, buffer, MAX_RESPONSE);
+  read(sock_fd, buffer, MAX_RESPONSE);
   printf("Response from server received:\n");
   printf("%s\n", buffer);
   close(sock_fd);

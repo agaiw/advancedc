@@ -16,11 +16,15 @@
 
 int main(int argc, char* argv[]) {
 
-  int port = strtol(argv[1], NULL, 10);
-  if (argc < 2 || port < 1024 || port > 49151) {
-    printf("Please provide valid port number. Example usage:\n ");
+  if (argc < 2) {
+    printf("Please provide valid port number (range: 1024-49151). Example usage:\n ");
     printf("./server 5100\n");
     exit(EXIT_SUCCESS);
+  }
+  int port = strtol(argv[1], NULL, 10);
+  if (port < 1024 || port > 49151) {
+   printf("Valid port number range: 1024-49151.\n"); 
+   exit(EXIT_SUCCESS);
   }
   // Create socket for accepting connections
   int sock = makeSocket(port);
@@ -66,6 +70,7 @@ int main(int argc, char* argv[]) {
           int status =  readFromClient(request, MAX_REQUEST, i);
           if (status > 0) {
             char* response = (char*)malloc(MAX_RESPONSE * sizeof(char));
+            response[0] = '\0';
             createResponse(request, response);
             write(i, response, strlen(response));
             free(response);

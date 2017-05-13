@@ -11,20 +11,20 @@ void loadIfData(ifDataS interfaces[]) {
 
   // Initialize interfaces table
   for (int i = 0; i < IF_LIMIT; ++i) {
-    strcpy(interfaces[i].ifName, "");
-    strcpy(interfaces[i].ipv4Addr, "");
-    strcpy(interfaces[i].ipv4Mask, "");
-    strcpy(interfaces[i].ipv6Addr, "");
-    strcpy(interfaces[i].status, "");
+    interfaces[i].ifName[0] = '\0';
+    interfaces[i].ipv4Addr[0] = '\0';
+    interfaces[i].ipv4Mask[0] = '\0';
+    interfaces[i].ipv6Addr[0] = '\0';
+    interfaces[i].status[0] = '\0';
   }
   // Get interfaces data
   struct ifaddrs* ifaddrs_p = NULL;
   getifaddrs(&ifaddrs_p);
   struct ifaddrs* ifaddr = ifaddrs_p;
-  int family;
+ // int family;
 
   while (ifaddr != NULL) {
-    family = ifaddr->ifa_addr->sa_family;
+//    family = ifaddr->ifa_addr->sa_family;
     for (int i = 0; i < IF_LIMIT; ++i) { 
     if(strcmp((char*)interfaces[i].ifName, ifaddr->ifa_name) == 0) {
       //interface already on the list
@@ -79,8 +79,7 @@ void loadIfData(ifDataS interfaces[]) {
 
 void dumpInterfaceList(ifDataS interfaces[], char* out) {
   int ifCount = getIfCount(interfaces);
-  strcpy(out, "");
-  strcat(out, "Available interfaces: " );
+  strcpy(out, "Available interfaces: " );
   for (int i = 0; i < IF_LIMIT; ++i) {
     if (strcmp(interfaces[i].ifName, "") != 0) {
       strcat(out, interfaces[i].ifName);
